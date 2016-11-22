@@ -1,0 +1,78 @@
+digraph VPC {
+  node [style=filled shape=square]
+  compound=true;
+  rankdir=LR;
+
+  /*
+     REGION
+  */
+  subgraph cluster_region {
+    label="REGION"
+    IGW [label="IGW" shape="doublecircle"];
+
+    /*
+       Availability Zone 1A
+    */
+    subgraph cluster_availability_zone_1a {
+      label="Availability Zone 1A"
+
+      /*
+         Private Subnet
+      */
+      subgraph cluster_private_subnet_1a {
+        label="Private Subnet 1A"
+        EC2_1A [label="EC2"];
+        FILLER_1A [style=invisible group=g2];
+      }
+
+      /*
+         Public Subnet
+      */
+      subgraph cluster_public_subnet_1a {
+        label="Public Subnet 1A"
+        VPC_NGW1A [label=<VPC<BR />NAT> shape="doublecircle" ];
+        ELB_1A [label="ELB"]
+        ELB_1A -> EC2_1A [style=dotted dir=both];
+      }
+
+      EC2_1A -> VPC_NGW1A [label=<<BR /><BR />Internet traffic<BR />routes to VPC NAT>
+                           ltail=cluster_private_subnet_1a];
+    }
+
+    /*
+       Availability Zone 1B
+    */
+    subgraph cluster_availability_zone_1b {
+      label="Availability Zone 1B"
+
+      /*
+         Private Subnet
+      */
+      subgraph cluster_private_subnet_1b {
+        label="Private Subnet 1B"
+        EC2_1B [label="EC2"];
+        FILLER_1B [style=invisible];
+      }
+
+      /*
+         Public Subnet
+      */
+      subgraph cluster_public_subnet_1b {
+        label="Public Subnet 1B"
+        VPC_NGW1B [label=<VPC<BR />NAT> shape="doublecircle"];
+        ELB_1B [label="ELB"]
+        ELB_1B -> EC2_1B [style=dotted dir=both];
+      }
+      EC2_1B -> VPC_NGW1B [label=<<BR /><BR />Internet traffic<BR />routes to VPC NAT>
+                           ltail=cluster_private_subnet_1b];
+    }
+
+    VPC_NGW1A -> IGW [label=<<BR />Traffic routes thru IGW>
+                      ltail=cluster_public_subnet_1a];
+    VPC_NGW1B -> IGW [label=<<BR />Traffic routes thru IGW>
+                      ltail=cluster_public_subnet_1b];
+
+    ELB_1A -> ELB_1B [style=dotted dir=both constraint=false];
+    //ELB_1B -> ELB_1A [style=dotted];
+  }
+}
