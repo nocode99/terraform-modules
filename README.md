@@ -1,2 +1,2 @@
 # terraform-modules
-My terraform modules
+A collection of terraform modules
