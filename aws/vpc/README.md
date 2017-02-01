@@ -29,7 +29,7 @@ provider "aws" {
 
 module "vpc" {
     # You will need an SSH key setup to authenticate to Github
-    source  = "git::ssh://git@github.com/KeplerGroup/kepler-terraform-modules//aws//vpc"
+    source  = "git::ssh://git@github.com/nocode99/terraform-modules/aws//vpc"
 
     name                = "${var.name}"
     env                 = "${var.env}"
